@@ -15,14 +15,33 @@ function dateFormat(whichDate, whatTime){
   return new Date(retVal);
 }
 function CreatSheet() {
-    var s = SpreadsheetApp.openById("1IB6rwVA-h2Rv3boxpEfo_pfBflodOuULk1ATOih6fEg");
-    var news = s.insertSheet("test6",0, {template: s.getSheetByName("11/8/2022")});
 
-    var eventNameCell = news.getRange(2, 2);
-    Browser.msgBox(eventNameCell.getFormula());
-    Browser.msgBox(eventNameCell.getFormula().replace("18","21"));
+    var s_all_events = SpreadsheetApp.getActiveSheet();
+    var cell_active = s_all_events.getActiveCell();
+    var rowi = cell_active.getRowIndex();
+    var coli = getColumnIndex("DONOTCHANGE_SheetId");
+
+    var cell_sheetid = s_all_events.getRange(cell_active.getRowIndex(), getColumnIndex("DONOTCHANGE_SheetId"));    
+    var cell_tabname = s_all_events.getRange(cell_active.getRowIndex(), getColumnIndex("DONOTCHANGE_TabName"));  
+
+     var sheetid = cell_sheetid.getValue();
+     var tabname = cell_tabname.getValue();
+    var s_month_event=SpreadsheetApp.openById(sheetid);    
+    var target_tab = s_month_event.getSheetByName(tabname);
+    if(target_tab==null)
+    {
+    var target_tab = s_month_event.insertSheet(tabname,0, {template: s_month_event.getSheetByName("9/")});
+      
+    }
+
+    var cell_event_name_from = s_all_events.getRange(cell_active.getRowIndex(), getColumnIndex("Event Name"));  
+    var cell_event_name_to = target_tab.getRange(2, 2);
+    var cell_event_name_from_val=cell_event_name_from.getValue();
+    cell_event_name_to.setValue(cell_event_name_from.getValue());
+    //Browser.msgBox(eventNameCell.getFormula());
+    //Browser.msgBox(eventNameCell.getFormula().replace("18","21"));
     
-    eventNameCell.setValue(eventNameCell.getFormula().replaceAll("18","21"));
+   // eventNameCell.setValue(eventNameCell.getFormula().replaceAll("18","21"));
   //var selection = s.getSelection().getActiveRange().getValues();
   //Browser.msgBox(selection);
   //selection.forEach(function(entey){
