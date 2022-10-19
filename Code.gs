@@ -9,9 +9,15 @@ function dateFormat(whichDate, whatTime){
 
   //'september 21, 2022 14:00:00'
   var dateString = Utilities.formatDate(new Date(whichDate),'America/New_York',"MMMM dd, yyyy");
-  var timeString = Utilities.formatDate(new Date(whatTime),'America/New_York',"HH:mm:ss");
-  var retVal = dateString +" "+ timeString;
-  SpreadsheetApp.getUi().alert(retVal);
+
+  var retVal = dateString;
+
+  if(whatTime!="")
+  {
+    var timeString = Utilities.formatDate(new Date(whatTime),'America/New_York',"HH:mm:ss");
+    retVal =retVal + timeString;
+  }
+  //SpreadsheetApp.getUi().alert(retVal);
   return new Date(retVal);
 }
 function CreatSheet() {
@@ -30,15 +36,33 @@ function CreatSheet() {
     var target_tab = s_month_event.getSheetByName(tabname);
     if(target_tab==null)
     {
-    var target_tab = s_month_event.insertSheet(tabname,0, {template: s_month_event.getSheetByName("9/")});
+    var target_tab = s_month_event.insertSheet(tabname,0, {template: s_month_event.getSheetByName("TEMPLATE")});
       
     }
 
     var cell_event_name_from = s_all_events.getRange(cell_active.getRowIndex(), getColumnIndex("Event Name"));  
+    var cell_event_date_from = s_all_events.getRange(cell_active.getRowIndex(), getColumnIndex("Event Date")); 
+    var cell_event_day_from = s_all_events.getRange(cell_active.getRowIndex(), getColumnIndex("Day"));     
+    var cell_event_address_from = s_all_events.getRange(cell_active.getRowIndex(), getColumnIndex("Address")); 
+    var cell_event_time_from = s_all_events.getRange(cell_active.getRowIndex(), getColumnIndex("Event Time")); 
+    var cell_event_notes_from = s_all_events.getRange(cell_active.getRowIndex(), getColumnIndex("Notes")); 
+
+    var cell_event_date_to = target_tab.getRange(1, 2);
+    cell_event_date_to.setValue(dateFormat(cell_event_date_from.getValue(),""));
+
     var cell_event_name_to = target_tab.getRange(2, 2);
-    var cell_event_name_from_val=cell_event_name_from.getValue();
     cell_event_name_to.setValue(cell_event_name_from.getValue());
-    //Browser.msgBox(eventNameCell.getFormula());
+
+    var cell_event_address_to = target_tab.getRange(3, 2);
+    cell_event_address_to.setValue(cell_event_address_from.getValue());
+
+    var cell_event_time_to = target_tab.getRange(4, 2);
+    cell_event_time_to.setValue(cell_event_time_from.getValue());
+
+    var cell_event_notes_to = target_tab.getRange(6, 2);
+    cell_event_notes_to.setValue(cell_event_notes_from.getValue());    
+
+    Browser.msgBox("Event Name: " + cell_event_name_from.getValue() + "Tab Name:" + tabname);
     //Browser.msgBox(eventNameCell.getFormula().replace("18","21"));
     
    // eventNameCell.setValue(eventNameCell.getFormula().replaceAll("18","21"));
